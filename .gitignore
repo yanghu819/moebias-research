@@ -1,0 +1,32 @@
+# LaTeX temporary files
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+# Build files
+*.dvi
+*.pdf
+*.ps
+*.synctex.gz
+*.fdb_latexmk
+
+# macOS
+.DS_Store
+
+# Claude Code
+.claude/

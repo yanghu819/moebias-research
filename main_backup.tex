@@ -1,0 +1,146 @@
+\documentclass[a4paper]{article}
+
+% --- 基本宏包 ---
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+% --- 标题和作者 ---
+\title{\textbf{MoE-Bias: Decoupling Competence and Strategy \\ for Parameter-Efficient Reinforcement Learning}}
+
+\author{
+  % TODO: 请在这里填入你的名字和单位
+  Your Name \\
+  Your Affiliation \\
+  \texttt{your.email@example.com}
+}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% =================================================================
+%  摘要 (Abstract)
+% =================================================================
+\begin{abstract}
+Adapting large pre-trained models to complex, sequential decision-making tasks via Reinforcement Learning (RL) presents a significant challenge. Full fine-tuning is computationally prohibitive and risks catastrophic forgetting, while existing Parameter-Efficient Fine-Tuning (PEFT) methods often modify core model representations in ways that may not be optimal for policy learning. In this work, we introduce Mixture-of-Expert Bias (MoE-Bias), a novel PEFT architecture designed specifically for RL-based fine-tuning. MoE-Bias operates by inserting a lightweight, trainable module that dynamically injects a bias directly into the model's final output logits, leaving the entire pre-trained backbone frozen. This is achieved through a gating network that routes the final hidden state to a set of "expert biases"—simple, learned vectors corresponding to the vocabulary space. Our core insight is that this design effectively decouples the model's foundational generative competence from its state-dependent strategic adaptation. The frozen base model provides the "know-how" of generating valid actions, while the MoE-Bias module learns the "know-when" of applying specific strategic nudges at critical decision points. We demonstrate empirically that MoE-Bias, while training only a minuscule fraction of parameters (<0.1\%), achieves performance comparable or even superior to full fine-tuning on complex RL tasks. This approach not only offers dramatic efficiency gains but also provides an architectural solution to the recently observed phenomenon that RL's success often hinges on optimizing a few high-entropy "forking points" in the decision process.
+\end{abstract}
+
+
+% =================================================================
+%  1. 引言 (Introduction)
+% =================================================================
+\section{Introduction}
+
+Large Language Models (LLMs) and other foundation models have demonstrated remarkable capabilities, largely acquired during their extensive pre-training phase. A key frontier in AI research is adapting these models to specialized, complex domains such as sequential decision-making and planning, often through Reinforcement Learning (RL) \cite{...}. % TODO: 引用RLHF, PPO for LLMs等相关工作
+However, the prevailing method of full fine-tuning (FFT) presents substantial obstacles: it is computationally intensive, requiring immense resources, and critically, it is prone to catastrophic forgetting, where the model's powerful, general-purpose abilities degrade as it overfits to the narrow distribution of the fine-tuning task \cite{...}. % TODO: 引用关于灾难性遗忘的文献, e.g., Kirkpatrick et al. 2017
+
+Parameter-Efficient Fine-Tuning (PEFT) methods, such as Low-Rank Adaptation (LoRA) \cite{...}, % TODO: 引用LoRA论文
+have emerged as a compelling alternative, dramatically reducing the number of trainable parameters. While effective, these methods typically inject adaptive modules within the core transformer layers, thus altering the model's internal representations. For RL tasks, we argue this may be a suboptimal approach. The goal of policy learning is often not to fundamentally change the model's understanding of the world, but rather to steer its behavior at specific, critical junctures.
+
+In this paper, we propose a new paradigm for PEFT in RL contexts, centered on the principle of \textbf{decoupling competence from strategy}. We introduce Mixture-of-Expert Bias (MoE-Bias), a lightweight, plug-and-play module that leaves the base model entirely frozen and operates directly on the final output distribution. The frozen model retains its rich, pre-trained "competence"—its ability to generate coherent and syntactically valid sequences (the "know-how"). The trainable MoE-Bias module learns a task-specific "strategy"—it identifies critical states and adaptively modifies the policy to favor advantageous actions (the "know-when").
+
+Our approach is deeply motivated by recent findings which suggest that the effectiveness of RL in reasoning tasks stems not from a global optimization of all tokens, but from targeted adjustments to a small subset of high-entropy, "forking point" tokens that determine the trajectory of reasoning \cite{...}. % TODO: 强烈建议在此引用Qwen的那篇论文 "High-Entropy Minority Tokens..."
+MoE-Bias provides a direct architectural instantiation of this principle. Its gating mechanism learns to identify these critical "forking states," and its expert biases learn to apply the precise, minimal intervention required to guide the policy, without disturbing the model's stable, foundational knowledge.
+
+Our key contributions are as follows:
+\begin{itemize}
+    \item We introduce MoE-Bias, a novel and parameter-efficient method that adds a dynamic, state-aware bias directly to the logits for RL-based fine-tuning.
+    \item We propose the concept of decoupling generative competence and strategic adaptation, with the former residing in a frozen base model and the latter in a lightweight, trainable module.
+    \item We provide empirical evidence showing that MoE-Bias matches or exceeds the performance of full fine-tuning on a challenging RL benchmark, despite training orders of magnitude fewer parameters. % TODO: 可以在这里简要提及你的推箱子实验
+    \item We offer a new perspective on why this approach is effective, linking it to the architectural realization of optimizing high-entropy decision points in a policy.
+\end{itemize}
+
+
+% =================================================================
+%  2. 相关工作 (Related Work)
+% =================================================================
+\section{Related Work}
+
+\paragraph{Parameter-Efficient Fine-Tuning (PEFT).}
+PEFT has become a cornerstone for adapting foundation models. Methods like Adapters \cite{...} % TODO: 引用Adapter-Tuning
+insert small feed-forward networks between transformer layers, while LoRA \cite{...} % TODO: 引用LoRA
+utilizes low-rank updates to weight matrices. These methods primarily focus on adapting the model's internal representations. Our MoE-Bias differs fundamentally by operating in the final decision space (logits), preserving the integrity of the base model's representations and providing a more direct mechanism for policy control.
+
+\paragraph{Mixture of Experts (MoE).}
+MoE models, such as GShard \cite{...} and Mixtral \cite{...}, % TODO: 引用 GShard, Mixtral 论文
+leverage sparse activation of expert sub-networks to increase model capacity without a proportional increase in computational cost. These experts are typically large feed-forward networks. In contrast, our MoE-Bias employs a radically different design: our "experts" are not networks, but simple, interpretable D-dimensional bias vectors, where D is the vocabulary size. This makes our module extremely lightweight and specialized for policy adaptation rather than general capacity scaling.
+
+\paragraph{Reinforcement Learning from Human Feedback (RLHF).}
+RLHF \cite{...} % TODO: 引用 InstructGPT 论文
+and its variants are the dominant paradigm for aligning LLMs with human preferences. These methods typically involve fine-tuning the entire model using algorithms like PPO \cite{...}. % TODO: 引用 PPO 论文
+Our work proposes a more efficient and stable alternative to the policy-tuning step in these pipelines, mitigating the risks of policy drift and catastrophic forgetting associated with full fine-tuning.
+
+
+% =================================================================
+%  3. 方法论 (Method: MoE-Bias for Policy Adaptation)
+% =================================================================
+\section{Methodology: MoE-Bias for Policy Adaptation}
+
+Our goal is to adapt a pre-trained foundation model, whose policy is denoted by $\pi_{\theta_0}$, to a new task using RL. Instead of fine-tuning the base model's parameters $\theta_0$, we keep them frozen and introduce a small, trainable MoE-Bias module, $\mathcal{M}_{\phi}$, which learns to apply a state-dependent bias directly to the model's output logits.
+
+\subsection{Architectural Design}
+
+The MoE-Bias module, $\mathcal{M}_{\phi}$, is composed of two core components: a gating network and a set of expert biases. It is designed to be a lightweight, post-hoc adapter that sits between the final hidden state computation and the final logit output.
+
+Let $h_t \in \mathbb{R}^{d_{model}}$ be the final hidden state produced by the frozen backbone for a given token at timestep $t$. The original logits $\ell_t \in \mathbb{R}^{V}$ are computed as $\ell_t = \text{lm\_head}(h_t)$, where $V$ is the vocabulary size. Our module computes a bias $b_t(\phi)$ and modifies the logits as $\ell'_t = \ell_t + b_t(\phi)$.
+
+\paragraph{Gating Network.}
+A simple linear layer, $g_\phi: \mathbb{R}^{d_{model}} \to \mathbb{R}^{N_e}$, acts as the gating network, where $N_e$ is the number of experts. For each token's hidden state $h_t$, it produces routing scores:
+\begin{equation}
+    G_t = g_\phi(h_t)
+\end{equation}
+These scores are then converted to probabilities using a softmax function, $P_t = \text{Softmax}(G_t)$, representing the routing weights for each expert.
+
+\paragraph{Expert Biases.}
+Unlike conventional MoE models, our experts are not neural networks. Instead, they are simple, trainable bias vectors. The entire set of experts is represented by a single parameter matrix $B_\phi \in \mathbb{R}^{N_e \times V}$. Each row $B_i$ corresponds to the bias vector of the $i$-th expert.
+
+\paragraph{Top-K Gating and Bias Computation.}
+To enforce sparsity and computational efficiency, we use Top-K gating. For each token, we select the $k$ experts with the highest routing probabilities from $P_t$. Let $\mathcal{T}_t$ be the set of indices of these top-$k$ experts. Their scores are re-normalized:
+\begin{equation}
+    w_{t,i} = \frac{P_{t,i}}{\sum_{j \in \mathcal{T}_t} P_{t,j}} \quad \forall i \in \mathcal{T}_t
+\end{equation}
+The final, state-dependent bias $b_t$ for the token is the weighted sum of the selected expert biases:
+\begin{equation}
+    b_t(\phi) = \sum_{i \in \mathcal{T}_t} w_{t,i} B_i
+\end{equation}
+This resulting bias vector $b_t(\phi) \in \mathbb{R}^{V}$ is then added to the original logits.
+
+\subsection{Training Objective}
+During the RL fine-tuning phase, the parameters $\theta_0$ of the base model remain frozen. Only the parameters of the MoE-Bias module, $\phi = \{g_\phi, B_\phi\}$, are updated. The primary learning signal comes from the RL objective, such as the PPO clipped surrogate objective, which we denote as $\mathcal{L}_{\text{RL}}(\phi)$.
+
+To encourage the gating network to utilize all experts relatively evenly, preventing a scenario where only a few experts are ever chosen, we introduce an auxiliary load-balancing loss. This loss encourages a uniform distribution of expert usage across a batch of data. Following prior work on MoEs \cite{...}, % TODO: 引用一篇经典的MoE论文, 如Shazeer et al. 2017
+we define the auxiliary loss $\mathcal{L}_{\text{aux}}$ as:
+\begin{equation}
+    \mathcal{L}_{\text{aux}}(\phi) = N_e \sum_{i=1}^{N_e} f_i \log(f_i)
+\end{equation}
+where $f_i$ is the average routing probability for expert $i$ over all tokens in a training batch. The final loss function is a weighted sum of the RL objective and the load-balancing loss:
+\begin{equation}
+    \mathcal{L}(\phi) = \mathcal{L}_{\text{RL}}(\phi) + \lambda \mathcal{L}_{\text{aux}}(\phi)
+\end{equation}
+where $\lambda$ is a hyperparameter controlling the strength of the load-balancing regularization. % TODO: 你可以在这里说明你实验中使用的具体lambda值。
+
+
+% =================================================================
+%  4. 结论与未来工作 (Conclusion and Future Work)
+% =================================================================
+\section{Conclusion and Future Work}
+
+In this work, we introduced MoE-Bias, a parameter-efficient fine-tuning method that effectively decouples a model's foundational competence from its task-specific strategic policy for reinforcement learning. By freezing the base model and training a small, dynamic module to directly adapt the output logits, MoE-Bias achieves performance on par with, or even exceeding, full fine-tuning, while requiring orders of magnitude fewer trainable parameters. Our approach provides a powerful architectural mechanism for the targeted optimization of critical decision points in sequential tasks, offering a path towards more efficient, stable, and robust model adaptation.
+
+Future work could explore several exciting directions. The high degree of interpretability of the expert biases invites analysis into what specific strategies are learned by each expert. Furthermore, the modular nature of MoE-Bias opens the door to composing different strategy modules for novel tasks, paving the way for more flexible and generalizable AI agents. Finally, applying MoE-Bias to a wider range of domains, including multi-modal tasks and real-world robotics, remains a promising avenue for exploration.
+
+
+% =================================================================
+%  参考文献 (References)
+% =================================================================
+\bibliographystyle{plain}
+% TODO: 你需要创建一个.bib文件 (例如 references.bib) 并在这里引用它
+% \bibliography{references} 
+
+\end{document}

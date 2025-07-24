@@ -1,0 +1,150 @@
+% iclr2025_conference.sty - style file for ICLR 2025
+% Based on neurips_2024.sty
+
+% Declare that this is a style file
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{iclr2025_conference}[2024/10/01 ICLR 2025 Conference Style]
+
+% Overall page dimensions
+\usepackage[letterpaper]{geometry}
+\geometry{
+  textheight=9in,
+  textwidth=6.5in,
+  top=1in,
+  headheight=12pt,
+  headsep=25pt,
+  footskip=30pt
+}
+
+% Font and spacing
+\renewcommand{\normalsize}{%
+  \@setfontsize\normalsize{10pt}{12pt}%
+  \abovedisplayskip 10pt plus 2pt minus 5pt%
+  \belowdisplayskip \abovedisplayskip%
+  \abovedisplayshortskip 0pt plus 3pt%
+  \belowdisplayshortskip 6pt plus 3pt minus 3pt%
+}
+
+\renewcommand{\small}{%
+  \@setfontsize\small{9pt}{11pt}%
+  \abovedisplayskip 8.5pt plus 3pt minus 4pt%
+  \belowdisplayskip \abovedisplayskip%
+  \abovedisplayshortskip 0pt plus 2pt%
+  \belowdisplayshortskip 4pt plus 2pt minus 2pt%
+}
+
+\renewcommand{\footnotesize}{\@setfontsize\footnotesize{8pt}{10pt}}
+\renewcommand{\scriptsize}{\@setfontsize\scriptsize{7pt}{8pt}}
+\renewcommand{\tiny}{\@setfontsize\tiny{5pt}{6pt}}
+\renewcommand{\large}{\@setfontsize\large{12pt}{14pt}}
+\renewcommand{\Large}{\@setfontsize\Large{14pt}{18pt}}
+\renewcommand{\LARGE}{\@setfontsize\LARGE{17pt}{22pt}}
+\renewcommand{\huge}{\@setfontsize\huge{20pt}{25pt}}
+\renewcommand{\Huge}{\@setfontsize\Huge{25pt}{30pt}}
+
+% Set spacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+
+% Title formatting
+\renewcommand{\maketitle}{%
+  \begin{center}%
+    {\LARGE\bfseries\@title\par}%
+    \vskip 1.5em%
+    {\large\@author\par}%
+  \end{center}%
+  \vskip 1em%
+}
+
+% Section formatting
+\renewcommand{\section}{%
+  \@startsection{section}{1}{\z@}%
+  {-3.5ex plus -1ex minus -.2ex}%
+  {2.3ex plus .2ex}%
+  {\normalfont\Large\bfseries}%
+}
+
+\renewcommand{\subsection}{%
+  \@startsection{subsection}{2}{\z@}%
+  {-3.25ex plus -1ex minus -.2ex}%
+  {1.5ex plus .2ex}%
+  {\normalfont\large\bfseries}%
+}
+
+\renewcommand{\subsubsection}{%
+  \@startsection{subsubsection}{3}{\z@}%
+  {-3.25ex plus -1ex minus -.2ex}%
+  {1.5ex plus .2ex}%
+  {\normalfont\normalsize\bfseries}%
+}
+
+\renewcommand{\paragraph}{%
+  \@startsection{paragraph}{4}{\z@}%
+  {3.25ex plus 1ex minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}%
+}
+
+% Captions
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{#1: #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    #1: #2\par
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip
+}
+
+% Abstract
+\renewenvironment{abstract}{%
+  \centerline{\large\bfseries Abstract}%
+  \vspace{0.5ex}%
+  \begin{quote}%
+}
+{%
+  \end{quote}%
+  \vskip 1ex%
+}
+
+% Bibliography
+\renewcommand{\@biblabel}[1]{[#1]}
+
+% Float placement
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.7}
+\renewcommand{\dblfloatpagefraction}{0.7}
+
+% Preprint option
+\DeclareOption{preprint}{%
+  \AtBeginDocument{%
+    \@ifundefined{@maketitle}{}{%
+      \let\oldmaketitle\@maketitle
+      \renewcommand{\@maketitle}{%
+        \oldmaketitle
+        \begin{center}
+          \textit{Preprint. Under review.}
+        \end{center}
+        \vskip 1em
+      }%
+    }%
+  }%
+}
+
+% Final option (camera-ready)
+\DeclareOption{final}{%
+  % Camera-ready version - no preprint notice
+}
+
+\ProcessOptions\relax
+
+\endinput

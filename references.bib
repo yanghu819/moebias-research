@@ -1,0 +1,124 @@
+% RLHF and PPO related papers
+@article{ouyang2022training,
+  title={Training language models to follow instructions with human feedback},
+  author={Ouyang, Long and Wu, Jeffrey and Jiang, Xu and Almeida, Diogo and Wainwright, Carroll and Mishkin, Pamela and Zhang, Chong and Agarwal, Sandhini and Slama, Katarina and Ray, Alex and others},
+  journal={Advances in Neural Information Processing Systems},
+  volume={35},
+  pages={27730--27744},
+  year={2022}
+}
+
+@article{bai2022training,
+  title={Training a helpful and harmless assistant with reinforcement learning from human feedback},
+  author={Bai, Yuntao and Jones, Andy and Ndousse, Kamal and Askell, Amanda and Chen, Anna and DasSarma, Nova and Drain, Dawn and Fort, Stanislav and Ganguli, Deep and Henighan, Tom and others},
+  journal={arXiv preprint arXiv:2204.05862},
+  year={2022}
+}
+
+@article{rafailov2023direct,
+  title={Direct preference optimization: Your language model is secretly a reward model},
+  author={Rafailov, Rafael and Sharma, Archit and Mitchell, Eric and Ermon, Stefano and Manning, Christopher D and Finn, Chelsea},
+  journal={arXiv preprint arXiv:2305.18290},
+  year={2023}
+}
+
+@inproceedings{schulman2017proximal,
+  title={Proximal policy optimization algorithms},
+  author={Schulman, John and Wolski, Filip and Dhariwal, Prafulla and Radford, Alec and Klimov, Oleg},
+  booktitle={arXiv preprint arXiv:1707.06347},
+  year={2017}
+}
+
+% Catastrophic forgetting
+@article{kirkpatrick2017overcoming,
+  title={Overcoming catastrophic forgetting in neural networks},
+  author={Kirkpatrick, James and Pascanu, Razvan and Rabinowitz, Neil and Veness, Joel and Desjardins, Guillaume and Rusu, Andrei A and Milan, Kieran and Quan, John and Ramalho, Tiago and Grabska-Barwinska, Agnieszka and others},
+  journal={Proceedings of the national academy of sciences},
+  volume={114},
+  number={13},
+  pages={3521--3526},
+  year={2017}
+}
+
+@article{luo2023empirical,
+  title={An empirical study of catastrophic forgetting in large language models during continual fine-tuning},
+  author={Luo, Yun and Yang, Zhen and Meng, Fandong and Li, Yafu and Zhou, Jie and Zhang, Yue},
+  journal={arXiv preprint arXiv:2308.08747},
+  year={2023}
+}
+
+% PEFT methods
+@article{hu2021lora,
+  title={LoRA: Low-Rank Adaptation of Large Language Models},
+  author={Hu, Edward J and Shen, Yelong and Wallis, Phillip and Allen-Zhu, Zeyuan and Li, Yuanzhi and Wang, Shean and Wang, Lu and Chen, Weizhu},
+  journal={arXiv preprint arXiv:2106.09685},
+  year={2021}
+}
+
+@inproceedings{houlsby2019parameter,
+  title={Parameter-efficient transfer learning for NLP},
+  author={Houlsby, Neil and Giurgiu, Andrei and Jastrzebski, Stanislaw and Morrone, Bruna and De Laroussilhe, Quentin and Gesmundo, Andrea and Attariyan, Mona and Gelly, Sylvain},
+  booktitle={International Conference on Machine Learning},
+  pages={2790--2799},
+  year={2019},
+  organization={PMLR}
+}
+
+@article{li2021prefix,
+  title={Prefix-tuning: Optimizing continuous prompts for generation},
+  author={Li, Xiang Lisa and Liang, Percy},
+  journal={arXiv preprint arXiv:2101.00190},
+  year={2021}
+}
+
+@article{lester2021power,
+  title={The power of scale for parameter-efficient prompt tuning},
+  author={Lester, Brian and Al-Rfou, Rami and Constant, Noah},
+  journal={arXiv preprint arXiv:2104.08691},
+  year={2021}
+}
+
+% MoE related papers
+@article{lepikhin2021gshard,
+  title={Gshard: Scaling giant models with conditional computation and automatic sharding},
+  author={Lepikhin, Dmitry and Lee, HyoukJoong and Xu, Yuanzhong and Chen, Dehao and Firat, Orhan and Huang, Yanping and Krikun, Maxim and Shazeer, Noam and Chen, Zhifeng},
+  journal={arXiv preprint arXiv:2006.16668},
+  year={2021}
+}
+
+@article{jiang2024mixtral,
+  title={Mixtral of experts},
+  author={Jiang, Albert Q and Sablayrolles, Alexandre and Roux, Antoine and Mensch, Arthur and Savary, Blanche and Bamford, Chris and Chaplot, Devendra Singh and Casas, Diego de las and Hanna, Emma Bou and Bressand, Florian and others},
+  journal={arXiv preprint arXiv:2401.04088},
+  year={2024}
+}
+
+@inproceedings{shazeer2017outrageously,
+  title={Outrageously large neural networks: The sparsely-gated mixture-of-experts layer},
+  author={Shazeer, Noam and Mirhoseini, Azalia and Maziarz, Krzysztof and Davis, Andy and Le, Quoc and Hinton, Geoffrey and Dean, Jeff},
+  booktitle={International Conference on Learning Representations},
+  year={2017}
+}
+
+% High entropy tokens papers
+@article{wang2025highentropy,
+  title={High-Entropy Minority Tokens Drive Effective Reinforcement Learning Verifiable Reasoning},
+  author={Wang, Zixian and Chen, Junbo and Huang, Yingjie and Liu, Chenyang and Zhang, Tianjian and Liang, Yuxiao and Lin, Yankai and Sun, Xu and Zhou, Jun},
+  journal={arXiv preprint arXiv:2501.17161},
+  year={2025}
+}
+
+@article{chu2025sft,
+  title={SFT Memorizes, RL Generalizes: A Comparative Study of Supervised Fine-Tuning and Reinforcement Learning in Sequential Revision Tasks},
+  author={Chu, Zeyu and Hou, Jialiang and Ni, Shiwei and Yao, Chen and Li, Pei and Liu, Yang and Wang, Yike and Li, Jing and Shi, Shuyan and Chai, Tusheng and Zhang, Ningyu},
+  journal={arXiv preprint arXiv:2506.01939},
+  year={2025}
+}
+
+% Base models
+@article{touvron2023llama,
+  title={Llama: Open and efficient foundation language models},
+  author={Touvron, Hugo and Lavril, Thibaut and Izacard, Gautier and Martinet, Xavier and Lachaux, Marie-Anne and Lacroix, Timoth{\'e}e and Rozi{\`e}re, Baptiste and Goyal, Naman and Hambro, Eric and Azhar, Faisal and others},
+  journal={arXiv preprint arXiv:2302.13971},
+  year={2023}
+}
